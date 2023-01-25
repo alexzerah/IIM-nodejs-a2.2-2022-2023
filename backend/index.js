@@ -5,6 +5,8 @@ import {Server} from "socket.io";
 
 import http from 'http';
 
+import userRoute from "./routes/user.js";
+
 const app = express();
 const httpServer = http.createServer(app);
 
@@ -18,15 +20,6 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
     console.log(`A user connected. Socket id: ${socket.id}`);
-
-    socket.on("message", (data) => {
-        io.emit("data", data)
-    });
-
-    // socket.on("mouse", (e) => {
-    //     io.emit("mouseM", e);
-    //     console.log(e);
-    // })
 });
 
 app.use(bodyParser.json());
@@ -37,10 +30,7 @@ app.get("/", (req, res) => {
     res.json({msg: "Hello world"});
 });
 
-app.post("/", (req, res) => {
-    console.log(req.body);
-    res.json(req.body);
-})
+app.use("/api/user", userRoute);
 
 httpServer.listen(port, () => {
     console.log(`Le serveur écoute sur ${port}`);
